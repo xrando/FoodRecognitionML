@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import os
 
 app = Flask(__name__)
+# Allow CORS so that the frontend can send a POST request to the backend
+CORS(app)
 
 # Load the trained model
 model = load_model('food_classification_model.h5', compile=False)
@@ -28,6 +31,7 @@ def predict():
         # Perform prediction
         prediction = model.predict(img_array)
         result = "Non-Food" if prediction[0][0] >= 0.5 else "Food"
+        print(f"Prediction: {result}")
 
         return jsonify({"prediction": result})
 
