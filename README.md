@@ -65,6 +65,10 @@ This will train the model and save it as `food_classification_model.h5` in the p
 
 After training, the model is evaluated on a test set. The script prints a classification report and confusion matrix, and plots the training and validation accuracy over epochs to visualize the model's learning process.
 
+## Model Performance and Tuning
+
+[TODO]
+
 ## Running the Application Locally
 
 Start the Flask application: `flask run --host=0.0.0.0`
@@ -95,10 +99,6 @@ The application will be accessible at your EC2 instance's public IP address on p
 To test the deployed application, you can send a POST request to the deployed endpoint using the provided script after modifying the endpoint to that of the deployed server: `python Send_Post_Request_To_Endpoint.py`
 
 This script sends an image to the `/classify-image` endpoint of the deployed application and prints the response.
-
-## Model Performance and Tuning
-
-[TODO]
 
 ## Author
 Benjamin Loh Choon How, 15/3/2024
