@@ -35,7 +35,7 @@ This repository contains the source code for Thyme & Budget Recognition Service 
 
 ## Dataset
 
-The model is trained on the [Food-5K image dataset](https://www.kaggle.com/datasets/trolukovich/food5k-image-dataset) provided on Kaggle. The dataset consists of food and non-food images, divided into 3 sets - train, validation, and evaluation. Each set contains 2 categories - food and non_food, the training set contains 1500 images each while the other set consists of 500 images.
+The model is trained on the [Food-5K image dataset](https://www.kaggle.com/datasets/trolukovich/food5k-image-dataset) provided on Kaggle. The dataset consists of food and non-food images, divided into 3 sets - train, validation, and evaluation. Each set contains 2 categories - food and non_food, the training set contains 3000 images each while the other set consists of 1000 images.
 
 ## Prerequisites
 
@@ -67,7 +67,33 @@ After training, the model is evaluated on a test set. The script prints a classi
 
 ## Model Performance and Tuning
 
-[TODO]
+The training process was carried out over 20 epochs. The model's performance improved over time, as evidenced by the decreasing loss and increasing accuracy on the training set as seen in Training.txt. The validation loss fluctuated, indicating that the model was learning to generalize to unseen data, but also that it was sensitive to the specific samples in the validation set. The highest validation accuracy achieved was 97.78% in the 15th epoch.
+
+However, the model's performance on the validation set varied, with the accuracy ranging from 54.03% to 97.78%. After the final epoch, the model achieved a training accuracy of 99.29% and a validation accuracy of 94.56%. This indicates that the model was able to learn the training data well and also generalize to unseen data to a significant extent.
+
+The model was then evaluated on the test set, achieving an accuracy of 92%. The precision and recall for the two classes were also high, indicating that the model was able to correctly identify the majority of samples in both classes. The confusion matrix further illustrates this, showing that the model made relatively few misclassifications.
+
+The detailed performance metrics on the test set are as follows:
+
+| Metric       | Class 0 | Class 1 |
+|--------------|---------|---------|
+| Precision    | 0.98    | 0.87    |
+| Recall       | 0.85    | 0.98    |
+| F1-Score     | 0.91    | 0.92    |
+| Support      | 500     | 500     |
+
+- Accuracy: 0.92
+- Macro Average: 0.92
+- Weighted Average: 0.92
+
+## Confusion Matrix
+
+The confusion matrix for the model on the test set is as follows:
+
+|            | Predicted: 0 | Predicted: 1 |
+|------------|--------------|--------------|
+| Actual: 0  | 427          | 73           |
+| Actual: 1  | 8            | 492          |
 
 ## Running the Application Locally
 
