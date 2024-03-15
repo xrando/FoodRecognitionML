@@ -95,6 +95,10 @@ The confusion matrix for the model on the test set is as follows:
 | Actual: 0  | 427          | 73           |
 | Actual: 1  | 8            | 492          |
 
+## Plot for training and validation accuracy
+![alt text](image.png)
+
+
 ## Running the Application Locally
 
 Start the Flask application: `flask run --host=0.0.0.0`
