@@ -77,23 +77,20 @@ The detailed performance metrics on the test set are as follows:
 
 | Metric       | Class 0 | Class 1 |
 |--------------|---------|---------|
-| Precision    | 0.98    | 0.87    |
-| Recall       | 0.85    | 0.98    |
-| F1-Score     | 0.91    | 0.92    |
+| Precision    | 0.99    | 0.91    |
+| Recall       | 0.90    | 0.99    |
+| F1-Score     | 0.94    | 0.95    |
 | Support      | 500     | 500     |
 
-- Accuracy: 0.92
-- Macro Average: 0.92
-- Weighted Average: 0.92
+- Accuracy: 0.95
+- Macro Average: 0.95
+- Weighted Average: 0.95
 
 ## Confusion Matrix
 
-The confusion matrix for the model on the test set is as follows:
+The confusion matrix for the model on the test set is as follows (1 = food, 0 = non-food):
 
-|            | Predicted: 0 | Predicted: 1 |
-|------------|--------------|--------------|
-| Actual: 0  | 427          | 73           |
-| Actual: 1  | 8            | 492          |
+![img.png](img.png)
 
 ## Plot for training and validation accuracy
 ![alt text](image.png)

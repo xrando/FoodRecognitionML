@@ -6,6 +6,8 @@ from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
 from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib.pyplot as plt
+import seaborn as sns
+from tensorflow.keras.models import load_model
 
 # Root project directory
 root_dir = os.getcwd()
@@ -53,45 +55,60 @@ test_generator = test_datagen.flow_from_directory(
     class_mode='binary',
     shuffle=False)
 
-# Load pre-trained MobileNetV2 model
-base_model = MobileNetV2(weights='imagenet', include_top=False)
+model_path = 'food_classification_model.h5'
 
-# Add custom classification head
-x = base_model.output
-x = GlobalAveragePooling2D()(x)
-x = Dense(1024, activation='relu')(x)
-x = Dropout(0.5)(x)  # Add dropout for regularization
-predictions = Dense(1, activation='sigmoid')(x)
+# Check if the model file exists
+if os.path.exists(model_path):
+    # Load the pre-trained model
+    model = load_model(model_path)
+else:
+    # Load pre-trained MobileNetV2 model
+    base_model = MobileNetV2(weights='imagenet', include_top=False)
 
-model = Model(inputs=base_model.input, outputs=predictions)
+    # Add custom classification head
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation='relu')(x)
+    x = Dropout(0.5)(x)  # Add dropout for regularization
+    predictions = Dense(1, activation='sigmoid')(x)
 
-# Fine-tune some of the later layers of the base model
-for layer in base_model.layers[:100]:
-    layer.trainable = False
-for layer in base_model.layers[100:]:
-    layer.trainable = True
+    model = Model(inputs=base_model.input, outputs=predictions)
 
-# Use a learning rate schedule
-initial_learning_rate = 0.001
-lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-    initial_learning_rate, decay_steps=100000, decay_rate=0.96, staircase=True)
-optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+    # Fine-tune some of the later layers of the base model
+    for layer in base_model.layers[:100]:
+        layer.trainable = False
+    for layer in base_model.layers[100:]:
+        layer.trainable = True
 
-# Compile the model with the new optimizer
-model.compile(optimizer=optimizer,
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
+    # Use a learning rate schedule
+    initial_learning_rate = 0.001
+    lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+        initial_learning_rate, decay_steps=100000, decay_rate=0.96, staircase=True)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
 
-# Train the model
-history = model.fit(
-    train_generator,
-    steps_per_epoch=train_generator.samples // batch_size,
-    epochs=20,
-    validation_data=valid_generator,
-    validation_steps=valid_generator.samples // batch_size)
+    # Compile the model with the new optimizer
+    model.compile(optimizer=optimizer,
+                  loss='binary_crossentropy',
+                  metrics=['accuracy'])
 
-# Save the trained model
-model.save('food_classification_model.h5')
+    # Train the model
+    history = model.fit(
+        train_generator,
+        steps_per_epoch=train_generator.samples // batch_size,
+        epochs=20,
+        validation_data=valid_generator,
+        validation_steps=valid_generator.samples // batch_size)
+
+    # Save the trained model
+    model.save(model_path)
+    # Plot training and validation accuracy
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title('Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Validation'], loc='upper left')
+    plt.show()
 
 # Evaluate the model on the test set
 predictions = model.predict(test_generator)
@@ -102,11 +119,13 @@ print(classification_report(test_generator.classes, predicted_classes))
 conf_matrix = confusion_matrix(test_generator.classes, predicted_classes)
 print(conf_matrix)
 
-# Plot training and validation accuracy
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.title('Model accuracy')
-plt.ylabel('Accuracy')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Validation'], loc='upper left')
+# Generate the confusion matrix
+conf_matrix = confusion_matrix(test_generator.classes, predicted_classes)
+
+# Plot the confusion matrix
+plt.figure(figsize=(5, 5))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion matrix')
+plt.xlabel('Predicted class')
+plt.ylabel('True class')
 plt.show()
